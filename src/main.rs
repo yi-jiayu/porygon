@@ -1,15 +1,36 @@
 #![feature(proc_macro_hygiene, decl_macro)]
 
+pub mod schema;
+
 #[macro_use]
 extern crate rocket;
 
+#[macro_use]
+extern crate rocket_contrib;
+
+#[macro_use]
+extern crate diesel;
+
+use chrono::{DateTime, Utc};
+use diesel::result::Error;
+use diesel::RunQueryDsl;
+use rocket::http::Status;
 use rocket_contrib::json::Json;
+use schema::events;
 use serde::{Deserialize, Serialize};
 
-#[derive(Serialize, Deserialize)]
+#[database("porygon")]
+struct MyDatabase(diesel::PgConnection);
+
+#[derive(Serialize, Deserialize, Insertable)]
+#[table_name = "events"]
 struct Event {
-    chat_id: i64,
+    timestamp: DateTime<Utc>,
+    #[serde(rename = "type")]
+    type_: String,
     user_id: i64,
+    chat_id: i64,
+    chat_type: String,
 }
 
 #[get("/")]
@@ -18,13 +39,18 @@ fn index() -> &'static str {
 }
 
 #[post("/", format = "json", data = "<event>")]
-fn new_event(event: Json<Event>) -> Json<Event> {
-    return event;
+fn new_event(event: Json<Event>, conn: MyDatabase) -> Result<Status, Error> {
+    let event = event.into_inner();
+    diesel::insert_into(schema::events::table)
+        .values(&event)
+        .execute(&*conn)?;
+    return Ok(Status::NoContent);
 }
 
 fn main() {
     rocket::ignite()
         .mount("/", routes![index])
         .mount("/events", routes![new_event])
+        .attach(MyDatabase::fairing())
         .launch();
 }

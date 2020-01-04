@@ -1,0 +1,2 @@
+[global.databases.porygon]
+url = "postgres://localhost/porygon"
