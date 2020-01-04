@@ -48,6 +48,11 @@ fn new_event(event: Json<Event>, conn: MyDatabase) -> Result<Status, Error> {
 }
 
 fn main() {
+    // Configure Rocket to listen on the port specified by $PORT without using rocket::custom().
+    use std::env;
+    let port = env::var("PORT").unwrap_or("8080".to_owned());
+    env::set_var("ROCKET_PORT", port);
+
     rocket::ignite()
         .mount("/", routes![index])
         .mount("/events", routes![new_event])
