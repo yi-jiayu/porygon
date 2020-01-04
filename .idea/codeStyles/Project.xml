@@ -1,0 +1,12 @@
+<component name="ProjectCodeStyleConfiguration">
+  <code_scheme name="Project" version="173">
+    <ClojureCodeStyleSettings>{
+  :aoc.year2017.day13/update-scanner-positions 0
+  :cljs.core/with-redefs 1
+  :compojure.core/defroutes :only-indent
+}</ClojureCodeStyleSettings>
+    <JavaCodeStyleSettings>
+      <option name="CLASS_COUNT_TO_USE_IMPORT_ON_DEMAND" value="15" />
+    </JavaCodeStyleSettings>
+  </code_scheme>
+</component>
