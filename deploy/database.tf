@@ -12,7 +12,12 @@ resource "google_service_networking_connection" "porygon_db" {
   reserved_peering_ranges = [google_compute_global_address.porygon_db.name]
 }
 
+resource "random_id" "db_name_suffix" {
+  byte_length = 4
+}
+
 resource "google_sql_database_instance" "porygon" {
+  name             = "porygon-${random_id.db_name_suffix.hex}"
   database_version = "POSTGRES_11"
   region           = "asia-southeast1"
 
