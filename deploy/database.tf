@@ -34,3 +34,8 @@ resource "google_sql_user" "porygon" {
   instance = google_sql_database_instance.porygon.name
   password = var.db_password
 }
+
+resource "google_sql_database" "porygon" {
+  name     = "porygon"
+  instance = google_sql_database_instance.porygon.name
+}
